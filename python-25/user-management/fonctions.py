@@ -1,14 +1,40 @@
 import json
+import os
 import random
+import typing
 
-file_name = "db.json"
+file_name = "/Users/imac_j06/Desktop/your-first-contribution/python-25/user-management/db.json"
+bd_content:dict[str, list[dict]] = {}
 
+with open(file_name, "r") as file:
+    bd_content = json.load(file)
+
+
+def login(email: str, password: str):
+    users = bd_content.get("Users",[])
+
+    for user in users:
+        if user["email"] == email and user["password"] == password:
+            return user
+
+    
+
+def register(email: str, password: str):
+    if os.path.exists(file_name):
+            data = load_db(file_name)
+            data["Users"].append({"email": email, "password": password, "role": "USER"})
+            save_db(data, file_name)
+    else:
+        data = {"Users": [{"email": email, "password": password, "role": "USER"}]}
+        save_db(data, file_name)
+
+    print("Inscription réussie !")
 
 def forgot_password(email: str):
-    flag_mail = False
-    with open(file_name, "r") as f:
-        db_content = json.load(f)
-        users = db_content["Users"]
+
+    db_content = load_db(file_name)
+
+    users = db_content["Users"]
 
     for user in users:  # Parcours de la liste des comptes enregistrés
         if email == user["email"]:  # Vérification de l'existence de l'email
@@ -28,18 +54,26 @@ def forgot_password(email: str):
 
             new_password = input("Entrez votre nouveau mot de passe : ")
             user["password"] = new_password  # Mise à jour du nouveau mot de passe
+            db_content['Users'] = users
+            save_db(db_content, file_name)
+            return True
+    return False
 
-            with open(
-                file_name, "w"
-            ) as f:  # Réécriture du fichier avec le nouveau mot de passe
-                json.dump(db_content, f)
-            print("Mot de passe mis à jour avec succès !")
+def load_db(file):
+    """Charge les utilisateurs depuis le fichier JSON."""
+    with open(file, "r") as f:
+        return json.load(f)
+
+def save_db(data, file):
+    """Sauvegarde les données dans le fichier JSON."""
+    with open(file, "w") as file:
+        json.dump(data, file, indent=4)
 
 
-def list_users():
+def list_users(file):
     """Affiche la liste des utilisateurs enregistrés."""
-    bd_content = load_db()  # On charge les données du fichier JSON
-    users = bd_content.get("users", [])  # On récupère la liste des utilisateurs
+    bd_content = load_db(file)  # On charge les données du fichier JSON
+    users = bd_content.get("Users", [])  # On récupère la liste des utilisateurs
 
     if not users:  # Si la liste est vide
         print("Aucun utilisateur enregistré.")
@@ -47,6 +81,11 @@ def list_users():
 
     print("Liste des utilisateurs :")
     for user in users:  # On parcourt chaque utilisateur
-        print(
-            f"Email: {user['email']}, Rôle: {user['role']}"
-        )  # On affiche son email et son rôle
+        print(f"Email: {user['email']}, Rôle: {user['role']}")  # On affiche son email et son rôle
+
+def ask_email_pass():
+    email = input("Veuillez saisir votre adresse email : ")
+    password = input("Veuillez saisir votre mot de passe : ")
+
+    return (email, password)
+

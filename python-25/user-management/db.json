@@ -1,1 +1,8 @@
-{"Users": [{"email": "admin@gmail.com", "password": "Admin", "role": "admin"}, {"email": "user@gmail.com", "password": "1234", "role": "user"}, {"email": "test@gmail.com", "password": "0000", "role": "user"}, {"email": "geek@gamil.com", "password": "Master", "role": "admin"}]}
+{
+  "Users": [
+    { "email": "admin@gmail.com", "password": "Admin", "role": "ADMIN" },
+    { "email": "user@gmail.com", "password": "1234", "role": "USER" },
+    { "email": "test@gmail.com", "password": "0000", "role": "USER" },
+    { "email": "geek@gamil.com", "password": "Master", "role": "ADMIN" }
+  ]
+}
